@@ -1,5 +1,14 @@
 #include <stdio.h>
 
+void read_loop()
+{
+    int c;
+    while ((c = fgets(stdin)) != EOF)
+    {
+
+    }
+}
+
 int main(void)
 {
     char c;
