@@ -53,8 +53,8 @@ int word_add_char(word_ptr word, int c)
     return 1;
 }
 
-void word_free(word_ptr *ptr)
+void word_free(word_ptr ptr)
 {
-    free((*ptr)->data);
+    free(ptr->data);
 }
 

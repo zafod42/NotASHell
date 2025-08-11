@@ -81,6 +81,7 @@ void read_loop(void)
             fprintf(stdout, "> ");
         }
     }
+    word_free(&word);
     fprintf(stdout, "\nexit\n");
 }
 
