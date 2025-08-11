@@ -7,12 +7,12 @@ static enum { initial_capacity = 10 };
 
 int word_init(word_ptr word)
 {
-    word->size = 0;
-    word->capacity = initial_capacity;
-    /* definitly have to check errno */
     word->data = (char *)malloc(initial_capacity);
     if (!word->data)
         return 0;
+    word->size = 0;
+    word->capacity = initial_capacity;
+    /* definitly have to check errno */
     return 1;
 }
 
@@ -26,12 +26,13 @@ static int string_copy(char *dest, const char *src)
 
 static char *word_resize(word_ptr word)
 {
-    word_ptr new_word;
-    new_word->size = word->size;
-    new_word->capacity = word->capacity * scale_factor;
-    new_word->data = (char *)malloc(new_word->capacity);
-    string_copy(new_word->data, word->data);
+    char *new_data;
+    word->capacity *= scale_factor;
+    new_data = (char *)malloc(word->capacity);
+    string_copy(new_data, word->data);
     free(word->data);
+    word->data = new_data;
+    return new_data;
 }
 
 /**
@@ -48,6 +49,7 @@ int word_add_char(word_ptr word, int c)
     }
     word->data[word->size] = (char) c;
     word->size++;
+    return 1;
 }
 
 void word_free(word_ptr *ptr)
