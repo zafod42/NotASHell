@@ -42,7 +42,7 @@ int process_line(word_item_ptr *list)
 void read_loop(void)
 {
     int c;
-    int in_word;
+    int in_word = 0;
     int quotation_mode = 0;
     word_t word;
     word_item_t *first = NULL;
@@ -50,19 +50,35 @@ void read_loop(void)
     printf("> ");
     while ((c = fgetc(stdin)) != EOF)
     {
-        if (!is_word_end(c)) {             /* word start or center */
+        if ('"' == c) {
             in_word = 1;
+            quotation_mode = !quotation_mode;
+            continue;
+        }
+
+        if (quotation_mode) {
             word_add_char(&word, c);
-        } else if (is_word_end(c) && in_word) {   /* word end */
-            word_add_char(&word, '\0');
-            word_list_add_item(&first, word.data);
-            in_word = 0;
-            word_init(&word);
+        } else {
+            if (!is_word_end(c)) {      /* word start or center */
+                in_word = 1;
+                word_add_char(&word, c);
+            } else if (is_word_end(c) && in_word) {   /* word end */
+                word_add_char(&word, '\0');
+                word_list_add_item(&first, word.data);
+                in_word = 0;
+                word_init(&word);
+            }
         }
 
         if ('\n' == c) {                /* end of string */
-            process_line(&first);
+            if (quotation_mode) {
+                quotation_mode = 0;
+                fprintf(stderr, "Error: unmached quotes\n");
+            } else {
+                process_line(&first);
+            }
             word_list_free(&first);
+            word_init(&word);
             fprintf(stdout, "> ");
         }
     }
