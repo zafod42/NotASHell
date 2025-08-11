@@ -1,0 +1,6 @@
+#ifndef NASH_LEXER_H_PROTECT
+#define NASH_LEXER_H_PROTECT
+
+
+
+#endif /* NASH_LEXER_H_PROTECT */

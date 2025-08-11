@@ -3,11 +3,21 @@
 
 #include <stdio.h>
 
-int is_space(int c) 
+int is_word_end(int c) 
 {
     switch(c) {
         case ' ':
         case '\n':
+        case '\t':
+            return 1;
+    }
+    return 0;
+}
+
+int is_space(int c) 
+{
+    switch(c) {
+        case ' ':
         case '\t':
             return 1;
     }
@@ -33,17 +43,17 @@ void read_loop(void)
 {
     int c;
     int in_word;
+    int quotation_mode = 0;
     word_t word;
     word_item_t *first = NULL;
     word_init(&word);
     printf("> ");
     while ((c = fgetc(stdin)) != EOF)
     {
-        if (!is_space(c)) {             /* word start or center */
+        if (!is_word_end(c)) {             /* word start or center */
             in_word = 1;
             word_add_char(&word, c);
-        }
-        else if (is_space(c) && in_word) {   /* word end */
+        } else if (is_word_end(c) && in_word) {   /* word end */
             word_add_char(&word, '\0');
             word_list_add_item(&first, word.data);
             in_word = 0;
