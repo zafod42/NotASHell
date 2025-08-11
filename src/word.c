@@ -16,11 +16,12 @@ int word_init(word_ptr word)
     return 1;
 }
 
-static int string_copy(char *dest, const char *src) 
+static int string_n_copy(char *dest, const char *src, int n) 
 {
     int i;
-    for(i = 0; src[i]; i++)
+    for (i = 0; i < n; ++i) {
         dest[i] = src[i];
+    }
     return i;
 }
 
@@ -29,7 +30,7 @@ static char *word_resize(word_ptr word)
     char *new_data;
     word->capacity *= scale_factor;
     new_data = (char *)malloc(word->capacity);
-    string_copy(new_data, word->data);
+    string_n_copy(new_data, word->data, word->size);
     free(word->data);
     word->data = new_data;
     return new_data;
@@ -52,8 +53,8 @@ int word_add_char(word_ptr word, int c)
     return 1;
 }
 
-void word_free(word_ptr *ptr)
+void word_free(word_ptr ptr)
 {
-    free((*ptr)->data);
+    free(ptr->data);
 }
 

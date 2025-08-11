@@ -78,10 +78,10 @@ void read_loop(void)
                 process_line(&first);
             }
             word_list_free(&first);
-            word_init(&word);
             fprintf(stdout, "> ");
         }
     }
+    word_free(&word);
     fprintf(stdout, "\nexit\n");
 }
 
