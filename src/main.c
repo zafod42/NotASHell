@@ -24,6 +24,31 @@ int is_space(int c)
     return 0;
 }
 
+void string_repr(int c, char *value)
+{
+    switch (c) {
+        case '\n':
+            value[0] = '\\';
+            value[1] = 'n';
+            value[2] = '\0';
+            break;
+        case '\t':
+            value[0] = '\\';
+            value[1] = 't';
+            value[2] = '\0';
+            break;
+        case '\r':
+            value[0] = '\\';
+            value[1] = 'r';
+            value[2] = '\0';
+            break;
+        default:
+            value[0] = (char) c;
+            value[1] = '\0';
+            break;
+    }
+}
+
 void report_word(word_item_ptr item)
 {
     printf("[%s]\n", item->word); 
@@ -44,19 +69,44 @@ void read_loop(void)
     int c;
     int in_word = 0;
     int quotation_mode = 0;
+    int escaping = 0;
     word_t word;
     word_item_t *first = NULL;
     word_init(&word);
     printf("> ");
     while ((c = fgetc(stdin)) != EOF)
     {
-        if ('"' == c) {
+        if ('"' == c && !escaping) {
             in_word = 1;
             quotation_mode = !quotation_mode;
             continue;
         }
+        else if ('\\' == c && !escaping) {
+            in_word = 1;
+            escaping = 1;
+            continue;
+        }
 
-        if (quotation_mode) {
+        if (escaping) {
+            escaping = 0;
+            if ('"' == c || '\\' == c) {
+                word_add_char(&word, c);
+            } else {
+                char repr[3];
+                string_repr(c, repr);
+                fprintf(stderr, "Error: escaping \"%s\" unsupported\n", repr);
+
+                if(first) {
+                    word_list_free(&first);
+                }
+                while(c != '\n' && c != EOF) {
+                    c = fgetc(stdin);
+                }
+                word_free(&word);
+                word_init(&word); /* NOTE: it is not just clear */
+            }
+        }
+        else if (quotation_mode) {
             word_add_char(&word, c);
         } else {
             if (!is_word_end(c)) {      /* word start or center */
