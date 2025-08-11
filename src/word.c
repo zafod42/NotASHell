@@ -25,6 +25,15 @@ static int string_n_copy(char *dest, const char *src, int n)
     return i;
 }
 
+int word_clear(word_ptr word)
+{
+    int i;
+    for (i = 0; i < word->size; ++i) {
+        word->data[i] = 0;
+    }
+    return i;
+}
+
 static char *word_resize(word_ptr word)
 {
     char *new_data;

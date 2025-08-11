@@ -102,8 +102,7 @@ void read_loop(void)
                 while(c != '\n' && c != EOF) {
                     c = fgetc(stdin);
                 }
-                word_free(&word);
-                word_init(&word); /* NOTE: it is not just clear */
+                word_clear(&word);
             }
         }
         else if (quotation_mode) {
@@ -114,7 +113,7 @@ void read_loop(void)
                 word_add_char(&word, c);
             } else if (is_word_end(c) && in_word) {   /* word end */
                 word_add_char(&word, '\0');
-                word_list_add_item(&first, word.data);
+                word_list_add_item(&first, word.data); /* word owned by list */
                 in_word = 0;
                 word_init(&word);
             }
