@@ -12,19 +12,16 @@ static int word_list_init(word_item_ptr *list, char *word)
     return 1;
 }
 
-int word_list_add_item(word_item_ptr *list, char *word)
+word_item_ptr word_list_add_item(word_item_ptr *list, char *word)
 {
-    int result;
     word_item_ptr tmp = NULL;
-    result = word_list_init(&tmp, word);
+    word_list_init(&tmp, word);
     if (!*list) {
         *list = tmp;
-        return result;
+    } else {
+        (*list)->next = tmp;
     }
-    while ((*list)->next)
-        list = &(*list)->next;
-    (*list)->next = tmp;
-    return result;
+    return tmp;
 }
 
 void word_list_free(word_item_ptr *ptr) 

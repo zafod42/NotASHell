@@ -4,6 +4,7 @@ SRC = $(wildcard src/*.c)
 OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 
 CFLAGS ?= -Wall -g -ansi -pedantic
+override CFLAGS += -Wall -g -ansi -pedantic
 LDFLAGS ?= 
 
 .PHONY: all clean
