@@ -90,6 +90,7 @@ static void handle_quotation(analyser_ptr ptr, int c)
 {
     if ('"' == c) {
         ptr->quotation_mode = 0;
+        ptr->in_word = 1;
         return;
     } else if ('\n' == c) {
         ptr->error = unmatched_quotes;
@@ -117,12 +118,13 @@ static void handle_non_space(analyser_ptr ptr, int c)
         ptr->escaping = 1;
         return;
     }
+    ptr->in_word = 1;
     word_add_char(&ptr->word, c);
 }
 
 static void handle_space(analyser_ptr ptr, int c)
 {
-    if (ptr->word.size > 0) {
+    if (ptr->word.size > 0 || ptr->in_word) {
         int i;
         char *word = (char *)malloc(ptr->word.size + 1);
         for (i = 0; i < ptr->word.size; ++i) {
@@ -135,13 +137,15 @@ static void handle_space(analyser_ptr ptr, int c)
         word_list_add_item(&ptr->last, word);
         if (!ptr->first) {
             ptr->first = ptr->last;
+        } else {
+            ptr->last = ptr->last->next;
         }
 
         ptr->word.size = 0;
-
-        if ('\n' == c) {
-            ptr->ready = 1;
-        }
+        ptr->in_word = 0;
+    }
+    if ('\n' == c) {
+        ptr->ready = 1;
     }
 }
 
@@ -163,6 +167,7 @@ void analyser_prepare_next_line(analyser_ptr ptr)
 {
     word_list_free(&ptr->first);
     analyser_clear(ptr);
+    word_clear(&ptr->word);
 }
 
 void analyser_free(analyser_ptr ptr)

@@ -1,0 +1,26 @@
+abra schwabra kadabra
+[abra]
+[schwabra]
+[kadabra]
+
+abra         schwabra           kadabra
+[abra]
+[schwabra]
+[kadabra]
+
+abra "schwabra kadabra" "foo   bar"
+[abra]
+[schwabra kadabra]
+[foo   bar]
+
+abra schw"abra ka"dab"ra" foo"   "bar
+[abra]
+[schwabra kadabra]
+[foo   bar]
+
+abra schwabra kadabra" foo bar
+Error: unmatched quotes
+
+abraschwabrakadabra
+[abraschwabrakadabra]
+

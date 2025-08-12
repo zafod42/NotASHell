@@ -10,6 +10,7 @@ typedef struct analyser_s {
     int           quotation_mode;
     int           escaping;
     int           ready;
+    int           in_word;
     word_item_ptr first;
     word_item_ptr last;
     word_t        word;
